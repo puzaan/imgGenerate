@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Image Generator</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="600" height="300"></canvas>
+  <a id="downloadLink" download="generated-image.png">Download Image</a>
+
+  <script>
+    // Get the canvas and context
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Function to draw the image and text
+    async function createImage() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Add background color
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Load the profile image dynamically
+      const profileImage = new Image();
+      profileImage.crossOrigin = "anonymous"; // To avoid CORS issues
+      profileImage.src = "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=600"; // Replace with dynamic URL
+
+      // Wait for image to load
+      await new Promise((resolve) => (profileImage.onload = resolve));
+
+      // Define image dimensions and position
+      const imageWidth = 200;
+      const imageHeight = 300;
+      const imageX = canvas.width - imageWidth; // Align to the right
+      const imageY = 0; // Align to the top
+
+      // Draw the profile image correctly
+      ctx.drawImage(profileImage, imageX, imageY, imageWidth, imageHeight);
+
+      // Add text on the left side
+      const text = "STARTUP\nPITCH\nVIDEO\nEXAMPLES";
+      const textX = 20; // Padding from the left
+      const textY = 50; // Position from the top
+      ctx.font = "bold 24px Arial";
+      ctx.fillStyle = "#000";
+      ctx.textAlign = "left";
+
+      // Split text into lines and render
+      text.split("\n").forEach((line, index) => {
+        ctx.fillText(line, textX, textY + index * 30); // 30px line height
+      });
+
+      // Export the canvas as an image
+      const dataUrl = canvas.toDataURL("image/png");
+      const downloadLink = document.getElementById("downloadLink");
+      downloadLink.href = dataUrl; // Set the download link
+    }
+
+    // Call the function to create the image
+    createImage();
+  </script>
+</body>
+</html>
